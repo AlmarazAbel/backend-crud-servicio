@@ -1,0 +1,15 @@
+{
+  "name": "18-backend-crud-servicios",
+  "version": "1.0.0",
+  "description": "Backend del crud de servicios de programacion",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index" ,
+    "dev": "node --watch index"
+  },
+  "keywords": ["middlewares","models","documentos","endpoints"],
+  "author": "Almaraz Abel",
+  "license": "ISC",
+ "packageManager": "pnpm@11.5.3",
+  "type": "module"
+}
