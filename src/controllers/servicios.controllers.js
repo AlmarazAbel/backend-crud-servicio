@@ -6,3 +6,12 @@ export const prueba = (req, res)=>{
         vehiculos
     })
 }
+
+export const crearServicio = async(req,res)=>{
+    try {
+        console.log(req.body)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json{mensaje:'ocurrio un error al intentar crear el servicio'}
+    }
+}
