@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node index",
+<<<<<<< HEAD
     "dev": "node --watch index"
+=======
+    "dev": "node --env-file .env --watch index"
+
+>>>>>>> feature/02-crud-servicios
   },
   "keywords": [
     "middlewares",

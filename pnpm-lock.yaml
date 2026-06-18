@@ -40,8 +40,13 @@ packages:
     resolution: {integrity: sha512-NF+epuEdnUYVlGuhaxbbq+dvJttwLnGY+YixlXlME5KpQ5W3CnXA5cVTneY3SPbPDRkcjMbifrwmFYcClgOZeg==}
     engines: {node: '>= 0.8'}
 
+<<<<<<< HEAD
   body-parser@2.3.0:
     resolution: {integrity: sha512-2cGmJupaNgg+QUwVLAucDuWuoMZ6EX9iHDRswZ5lsNYEmwPaRknMPCLZz07yTzVq/83p4o/wzbDZbBrTvGGTIw==}
+=======
+  body-parser@2.2.2:
+    resolution: {integrity: sha512-oP5VkATKlNwcgvxi0vM0p/D3n2C3EReYVX+DNYs5TjZFn/oQt2j+4sVJtSMr18pdRr8wjTcBl6LoV+FUwzPmNA==}
+>>>>>>> feature/02-crud-servicios
     engines: {node: '>=18'}
 
   bson@7.2.0:
@@ -421,10 +426,17 @@ snapshots:
     dependencies:
       safe-buffer: 5.1.2
 
+<<<<<<< HEAD
   body-parser@2.3.0:
     dependencies:
       bytes: 3.1.2
       content-type: 2.0.0
+=======
+  body-parser@2.2.2:
+    dependencies:
+      bytes: 3.1.2
+      content-type: 1.0.5
+>>>>>>> feature/02-crud-servicios
       debug: 4.4.3
       http-errors: 2.0.1
       iconv-lite: 0.7.2
@@ -499,7 +511,11 @@ snapshots:
   express@5.2.1:
     dependencies:
       accepts: 2.0.0
+<<<<<<< HEAD
       body-parser: 2.3.0
+=======
+      body-parser: 2.2.2
+>>>>>>> feature/02-crud-servicios
       content-disposition: 1.1.0
       content-type: 1.0.5
       cookie: 0.7.2
