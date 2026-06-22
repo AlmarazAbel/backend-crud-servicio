@@ -15,7 +15,20 @@ export const crearServicio = async (req, res) => {
     await servicioNuevo.save();
 
     //luego agregamos la validacion
-    res.status(201).json({mensaje:'El servicio fue creado correctamente'})
+    res.status(201).json({ mensaje: "El servicio fue creado correctamente" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "ocurrio un error al intentar crear el servicio",
+    });
+  }
+};
+
+export const listarServicios = async (req, res) => {
+  try {
+    const servicios = await Servicio.find();
+    res.status(200).json(servicios)
+    
   } catch (error) {
     console.error(error);
     res.status(500).json({
