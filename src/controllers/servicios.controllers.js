@@ -35,6 +35,7 @@ export const listarServicios = async (req, res) => {
     });
   }
 };
+
 export const buscarServicioPorID = async (req, res) => {
   try {
     console.log(req.params.id)
@@ -48,6 +49,22 @@ export const buscarServicioPorID = async (req, res) => {
     console.error(error);
     res.status(500).json({
       mensaje: "ocurrio un error al intentar crear el servicio",
+    });
+  }
+};
+export const borrarServicioPorID = async (req, res) => {
+  try {
+    
+    const servicioBorrado = await Servicio.findByIdAndDelete(req.params.id);
+    if(!servicioBorrado){
+        return  res.status(404).json({mensaje:'no se encontro un servicio con el id enviado'})
+    }
+    res.status(200).json({mensaje:'El servicio se borro correctamente'})
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "ocurrio un error al intentar eliminar un  servicio por id",
     });
   }
 };
