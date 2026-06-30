@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import resultadoValidacion from "./resultadoValidacion.js";
 
 export const validacionServicio = [
@@ -44,3 +44,6 @@ export const validacionServicio = [
 
   resultadoValidacion,
 ];
+export const validacionIDServicio =[
+param('id').isMongoId().withMessage('El id enviado no tiene el formato de ID Mongo DB'),resultadoValidacion
+]
