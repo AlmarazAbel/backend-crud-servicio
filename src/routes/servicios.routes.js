@@ -9,6 +9,7 @@ import {
 } from "../controllers/servicios.controllers.js";
 import {
   validacionIDServicio,
+  validacionPathServicio,
   validacionServicio,
 } from "../middleware/validacionServicio.js";
 
@@ -22,6 +23,6 @@ router.route("/:id")
   .get(validacionIDServicio, buscarServicioPorID)
   .delete(validacionIDServicio, borrarServicioPorID)
   .put([validacionIDServicio, validacionServicio], editarServicioPorID)
-  .patch(validacionIDServicio, editarServicioPorID);
+  .patch([validacionIDServicio,validacionPathServicio], editarServicioPorID);
 
 export default router;
