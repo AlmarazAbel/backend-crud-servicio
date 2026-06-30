@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node index",
     "dev": "node --env-file .env --watch index"
-
   },
   "keywords": [
     "middlewares",
@@ -21,6 +20,7 @@
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "express-validator": "^7.3.2",
     "mongoose": "^9.7.0",
     "morgan": "^1.11.0"
   }
