@@ -7,5 +7,6 @@ const router = Router();
 //get-post-put-patch-delete
 router.route('/test').get(prueba)
 router.route('/').post(crearServicio).get(listarServicios)
-router.route('/:id').get(buscarServicioPorID).delete(borrarServicioPorID).put(editarServicioPorID)
+router.route('/:id').get(buscarServicioPorID).delete(borrarServicioPorID).put(editarServicioPorID).patch(editarServicioPorID)
+
 export default router
