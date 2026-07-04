@@ -1,32 +1,40 @@
 import { body, param } from "express-validator";
 import resultadoValidacion from "./resultadoValidacion.js";
+import Servicio from "../models/servicios.js";
 
 export const reglasServicio = [
   body("nombreServicio")
-   
-    
     .isString()
     .withMessage("El nombre del servicio debe ser uns String")
     .isLength({ min: 5, max: 100 })
     .withMessage(
       "El nombre del servicio debe contener entre 5 y 100 caracteres",
-    ),
+    )
+    .custom(async (valor, { req }) => {
+      const servicioExistente = await Servicio.findOne({
+        nombreServicio: valor,
+      });
+      if (!servicioExistente) {
+        return true;
+      }
+      //verificamos  si estamos editando
+      if(req.params?.id && servicioExistente._id.toString()===req.params.id){
+        return true
+
+      }
+
+      throw new Error("El servicio ya existe en la base de datos");
+    }),
   body("precio")
-    
-    
     .isNumeric("El precio debe ser en formato numerioco")
     .isFloat({ min: 50 })
     .withMessage("El precio no puede ser menos de $50"),
   body("descripcion")
-    
-    
     .isString()
     .withMessage("La descripcion debe ser uns String")
     .isLength({ min: 10, max: 500 })
     .withMessage("La descripcion debe contener entre 10 y 500 caracteres"),
   body("imagen")
-    
-    
     .isString()
     .withMessage("La imagen debe ser un string")
     .matches(/^https:\/\/.+\.(jpg|jpeg|png|webp|avif|svg)$/)
@@ -35,24 +43,29 @@ export const reglasServicio = [
     ),
 
   body("categoria")
-    
-    
     .isString()
     .withMessage("La categoria debe ser un string")
     .isIn(["Desarrollo Web", "Backend & API", "Consultoría"])
-    .withMessage("La categoria debe ser una de las siguientes opciones 'Desarrollo Web', 'Backend & API', 'Consultoría'"),
-
-
-]
+    .withMessage(
+      "La categoria debe ser una de las siguientes opciones 'Desarrollo Web', 'Backend & API', 'Consultoría'",
+    ),
+];
 //para el post y el put
-export const validacionServicio =[
-    ...reglasServicio.map((regla)=>regla.notEmpty().withMessage('el campo es un dato obligatorio')),resultadoValidacion
-]
+export const validacionServicio = [
+  ...reglasServicio.map((regla) =>
+    regla.notEmpty().withMessage("el campo es un dato obligatorio"),
+  ),
+  resultadoValidacion,
+];
 //para el patch
 export const validacionPathServicio = [
-    ...reglasServicio.map((regla) =>regla.optional({values:"falsy"})),resultadoValidacion
-]
+  ...reglasServicio.map((regla) => regla.optional({ values: "falsy" })),
+  resultadoValidacion,
+];
 
-export const validacionIDServicio =[
-param('id').isMongoId().withMessage('El id enviado no tiene el formato de ID Mongo DB'),resultadoValidacion
-]
+export const validacionIDServicio = [
+  param("id")
+    .isMongoId()
+    .withMessage("El id enviado no tiene el formato de ID Mongo DB"),
+  resultadoValidacion,
+];
