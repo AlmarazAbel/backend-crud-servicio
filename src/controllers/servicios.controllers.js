@@ -38,7 +38,7 @@ export const listarServicios = async (req, res) => {
 
 export const buscarServicioPorID = async (req, res) => {
   try {
-    console.log(req.params.id)
+   
     const servicioBuscado = await Servicio.findById(req.params.id);
     if(!servicioBuscado){
         return  res.status(404).json({mensaje:'no se encontro un servicio con el id enviado'})
