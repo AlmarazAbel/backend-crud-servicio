@@ -41,3 +41,26 @@ export const buscarUsuarioPorID = async (req, res) => {
     });
   }
 };
+
+export const registroUsuario = async (req,res)=>{
+  try {
+    const {nombre, mail, password, rol}=req.body;
+    //verificar si el mail existe
+    //const usuarioExistente = await Usuario.findOne({email:req.boy.email})
+    const usuarioExistente = await Usuario.findOne({email})
+    if(usuarioExistente){
+      return res.status(409).json({mensaje:'El mail ya esta registrado'})
+    }
+// generar el codigo de verificacion y tiempo d expiracion
+const codigoVerificacion = Math.floor(100000 + Match.random() * 900000).toString
+
+const tiempoExpiracion = new Date(Date.now() + 15 *60 *1000)// el tiempo configurado son 15`
+
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "ocurrio un error al intentar registrarar un usuario",
+    });
+  }
+}
