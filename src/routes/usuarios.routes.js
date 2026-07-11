@@ -5,6 +5,7 @@ const router = Router();
 
 router.route("/").post(crearUsuario).get(listarUsuarios)
 router.route("/:id").get(buscarUsuarioPorID)
+router.route()
 
 
 export default router;
