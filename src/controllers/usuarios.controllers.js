@@ -108,3 +108,49 @@ return res.status(201).json({
     });
   }
 }
+//confirmar codigo de verificacion
+
+export const confirmarCodigoVerificacion = async (req,res)=>{
+  try {
+    const {email,codigo} = req.body
+    const usuarioBuscado = await Usuario.findOne({email})
+
+    if(!usuarioBuscado){
+
+      return res.status(404).json({mensaje:'no se encontro ningun usuario con ese email'})
+    }
+//chequear si el usuario ya esta verificado
+if(usuarioBuscado.isVerified===true){
+  return res.status(400).json({mensaje:'la cuenta ya fue verificada'})
+}
+//verificar si el codigo ya expiro
+
+if(new Date()> usuarioBuscado.verificationExpires){
+
+return res.status(400).json({mensaje:'el codigo de verificacion a expirado.Solicita uno nuevo'})
+}
+
+//verificar que el codigo enviado es el mismo que el verificado
+
+if(usuarioBuscado.verificationCode!==codigo){
+  return res.status(400).json({mensaje:'el codigo enviado es incorrecto'})
+}
+
+//verificar el codigo
+await Usuario.findByIdAndUpdate(usuarioBuscado._id,{
+  $set:{isVerified:true},
+  $unset:{verificationCode:1,verificationExpires:1}
+})
+
+
+
+res.satatus(200).json({mensaje:'cuenta verificada con exito. Ya puede iniciar sesion'})
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "ocurrio un error al intentar verificar el codigo enviado",
+    });
+    
+  }
+}
