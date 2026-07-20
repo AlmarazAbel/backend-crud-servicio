@@ -60,6 +60,8 @@ type:String
     timestamps: true,
   },
 );
+
+
 usuarioSchema.pre('save',async function () {
     const usuario=this;
     //si es el password no fue modificado
