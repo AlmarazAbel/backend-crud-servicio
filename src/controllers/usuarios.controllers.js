@@ -154,3 +154,63 @@ res.satatus(200).json({mensaje:'cuenta verificada con exito. Ya puede iniciar se
     
   }
 }
+
+//reenviar el codigo de verificacion
+
+export const solicitarNuevoCodigo = async(req,res)=>{
+try {
+  const {email} = req.body
+
+  const usuarioBuscado = await Usuario.findOne({email})
+if(!usuarioBuscado){
+ return res.status(404).json({mensaje:'no se encontro un usuario con ese email'})
+}  
+
+//validar que el codigo no este verificado
+if(usuarioBuscado.isVerified){
+
+return res.status(400).json({mensaje:'esta cuenta ya fue verificada'})
+}
+//generar un nuevo codigo y generar el tiempo
+const codigoVerificacion = Math.floor(
+  100000 + Math.random() * 900000
+).toString();
+
+const tiempoExpiracion = new Date(Date.now() + 15 *60 *1000)
+
+// actualizar el codigoen el usuario de la BD
+await Usuario.findByIdAndUpdate(usuarioBuscado._id,{
+verificationCode: codigoVerificacion,
+verificationExpires: tiempoExpiracion
+
+})
+//reenviar el correo
+await transporter.sendMail({
+      from: '"Crud Servicios" <no-reply@crud-servicios.com>',
+      to: email,
+      subject: "🔑 NUEVO Código de Verificación de Cuenta",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
+          <h2 style="color: #333; text-align: center;">¡Hola, ${usuarioBuscado.nombre}!</h2>
+          <p style="color: #666; font-size: 16px; line-height: 1.5;">
+            Gracias por registrarte. Para activar tu cuenta y poder ingresar a la plataforma, por favor utiliza el siguiente código de verificación:
+          </p>
+          <div style="background-color: #f4f4f4; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 20px 0; border-radius: 4px; color: #007bff;">
+            ${codigoVerificacion}
+          </div>
+          <p style="color: #999; font-size: 12px; text-align: center;">
+            Este código vencerá en 15 minutos. Si no solicitaste este registro, puedes ignorar este correo de forma segura.
+          </p>
+        </div>
+      `
+    });
+
+//enviar respuesta
+res.status(200).json({mensaje:'se creo un nuevo codigo de verificacion'})
+
+} catch (error) {
+   res.status(500).json({
+      mensaje: "ocurrio un error al intentar crear el nuevo codigo de verificacion",
+    });
+}
+}
