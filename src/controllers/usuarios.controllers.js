@@ -171,6 +171,14 @@ if(usuarioBuscado.isVerified){
 
 return res.status(400).json({mensaje:'esta cuenta ya fue verificada'})
 }
+//verificar si ya vencio el codigo enviado y recien expira vuelvo enviar
+
+//if(new Date()< usuarioBuscado.verificationExpires){
+
+//return res.status(400).json({mensaje:'el codigo de verificacion a expirado.Solicita uno nuevo'})
+//}
+
+
 //generar un nuevo codigo y generar el tiempo
 const codigoVerificacion = Math.floor(
   100000 + Math.random() * 900000
