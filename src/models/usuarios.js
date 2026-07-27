@@ -44,11 +44,24 @@ const usuarioSchema = new Schema(
       enum: ["admin", "cliente"],
       default: "cliente",
     },
+    //campos nuevos para verificar un registro
+    isVerified:{
+type:Boolean,
+default:false
+    },
+    verificationCode:{
+type:String
+    },
+    verificationExpires:{
+      type: Date
+    }
   },
   {
     timestamps: true,
   },
 );
+
+
 usuarioSchema.pre('save',async function () {
     const usuario=this;
     //si es el password no fue modificado
