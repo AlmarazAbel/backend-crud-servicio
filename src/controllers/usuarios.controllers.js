@@ -1,6 +1,8 @@
+
 import Usuario from "../models/usuarios.js";
 import { transporter } from "../utils/mailer.js";
-
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken"
 
 export const crearUsuario = async (req, res) => {
   try {
@@ -221,4 +223,42 @@ res.status(200).json({mensaje:'se creo un nuevo codigo de verificacion'})
       mensaje: "ocurrio un error al intentar crear el nuevo codigo de verificacion",
     });
 }
+}
+
+export const  login  = async(req,res)=>{
+
+  try {
+    const {email, password} =req.body
+    //verificamos que el email exista
+
+      const usuarioBuscado = await Usuario.findOne({email})
+    if(!usuarioBuscado){
+
+      res.status(401).json({mensaje:'credenciales invalidas- email'})
+    }
+    //verificar que el password sea el correcto
+    if(!await bcrypt.compare(password,usuarioBuscado.password)){
+      return res.status(401).json({mensaje:'credenciales invalidas- password'})
+    }
+    // verificar si la cuenta del usuario esta verificada
+
+    if(!usuarioBuscado.isVerified){
+      return res.status(403).json({mensaje:'La cuenta aun no fue verificada'})
+    }
+    //generar y firmar el TOKEN
+    const token = jwt.sign({id:usuarioBuscado._id},process.env.JWT_SECRET,{expiresIn : '1h'})
+
+    res.cookie('token',token,{
+      httpOnly:true,
+      maxAge:360000 //1hora
+
+    })
+
+    res.status(200).json({mensaje:'Login exitoso', usuario: usuarioBuscado.nombre })
+
+    
+  } catch (error) {
+    console.error(error)
+    res.satatus(500).json({mensaje:'Ocurrio un error al intentar loguear al usuario'})
+  }
 }
