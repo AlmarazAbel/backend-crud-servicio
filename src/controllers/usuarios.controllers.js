@@ -246,10 +246,12 @@ export const  login  = async(req,res)=>{
       return res.status(403).json({mensaje:'La cuenta aun no fue verificada'})
     }
     //generar y firmar el TOKEN
-    const token = jwt.sign({id:usuarioBuscado._id},process.env.JWT_SECRET,{expiresIn : '1h'})
+    const token = jwt.sign({id:usuarioBuscado._id,rol:usuarioBuscado.rol},process.env.JWT_SECRET,{expiresIn : '1h'})
 
     res.cookie('token',token,{
       httpOnly:true,
+      secure: process.env.NODE_ENV ==="producction",
+      sameSite: "strict",
       maxAge:360000 //1hora
 
     })
