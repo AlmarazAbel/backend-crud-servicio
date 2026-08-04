@@ -26,7 +26,7 @@ export const crearServicio = async (req, res) => {
 
 export const listarServicios = async (req, res) => {
   try {
-    const servicios = await Servicio.find();
+    const servicios = await Servicio.find().populate('categoria','nombre descripcion');
     res.status(200).json(servicios)
   } catch (error) {
     console.error(error);
