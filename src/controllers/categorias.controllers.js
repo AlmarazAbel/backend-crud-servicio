@@ -3,7 +3,7 @@ import Categoria from "../models/categoria.js";
 //todo: agregar los para editar,borrar y obtener una categoria
 export const crearCategoria = async (req, res) => {
   try {
-    //agregar las validaciones con expres validator
+    //todo:agregar las validaciones con expres validator
     const nuevaCategoria = new Categoria(req.body);
     await nuevaCategoria.save();
     res.status(201).json({ mensaje: "Categoria creada correctamente" });
