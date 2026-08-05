@@ -26,7 +26,14 @@ export const crearServicio = async (req, res) => {
 
 export const listarServicios = async (req, res) => {
   try {
-    const servicios = await Servicio.find().populate(
+    const { termino } = req.query;
+    const query = {};
+    // verificar si tenemos uin termoino de busqueda
+    if (termino) {
+      query.nombreServicio = { $regex: termino, $options: "i" };
+    }
+
+    const servicios = await Servicio.find(query).populate(
       "categoria",
       "nombre descripcion",
     );
@@ -45,7 +52,7 @@ export const buscarServicioPorID = async (req, res) => {
       "categoria",
       "nombre descripcion",
     );
-    
+
     if (!servicioBuscado) {
       return res
         .status(404)
@@ -87,12 +94,10 @@ export const editarServicioPorID = async (req, res) => {
         .status(404)
         .json({ mensaje: "no se encontro un servicio con el id enviado" });
     }
-    res
-      .status(200)
-      .json({
-        mensaje: "El servicio se actualizo  correctamente",
-        servicio: servicioEditado,
-      });
+    res.status(200).json({
+      mensaje: "El servicio se actualizo  correctamente",
+      servicio: servicioEditado,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({
