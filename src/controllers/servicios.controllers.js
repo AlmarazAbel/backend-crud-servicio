@@ -29,9 +29,9 @@ export const listarServicios = async (req, res) => {
     const { termino, pagina, limite } = req.query;
 
     const numeroPagina = parseInt(pagina);
-    const cantServicios = parseInt(limite);
+    const nuevoLimite = parseInt(limite);
 
-    const salto = (numeroPagina - 1) * cantServicios;
+    const salto = (numeroPagina - 1) * nuevoLimite;
     //filtro por termino
     const query = {};
     // verificar si tenemos uin termoino de busqueda
@@ -40,8 +40,12 @@ export const listarServicios = async (req, res) => {
     }
 
     const [servicios, cantidadServicios] = await Promise.all([
-      Servicio.find(query).populate("categoria", "nombre descripcion"),
-    Servicio.countDocuments(query)]);
+      Servicio.find(query)
+        .populate("categoria", "nombre descripcion")
+        .skip(salto)
+        .limit(nuevoLimite),
+      Servicio.countDocuments(query),
+    ]);
 
     //consultas individuales
     // const servicios = await Servicio.find(query).populate(
@@ -50,7 +54,14 @@ export const listarServicios = async (req, res) => {
     //);
     //const cantidadServicios = await Servicio.countDocuments(query)
 
-    res.status(200).json({ servicios, cantidadServicios });
+    res
+      .status(200)
+      .json({
+        servicios,
+        cantidadServicios,
+        paginaActual: numeroPagina,
+        totalPaginas: Math.ceil(cantidadServicios / nuevoLimite)
+      });
   } catch (error) {
     console.error(error);
     res.status(500).json({
