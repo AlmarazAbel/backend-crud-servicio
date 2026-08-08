@@ -29,6 +29,6 @@ const carritoSchema = new Schema(
   },
 );
 
-const Carrito =mongoose.model("carrito" ,carritoSchema)
+const Carrito = mongoose.model("carrito" ,carritoSchema)
 
 export default Carrito;
