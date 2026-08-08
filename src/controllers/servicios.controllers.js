@@ -26,18 +26,31 @@ export const crearServicio = async (req, res) => {
 
 export const listarServicios = async (req, res) => {
   try {
-    const { termino } = req.query;
+    const { termino, pagina, limite } = req.query;
+
+    const numeroPagina = parseInt(pagina);
+    const cantServicios = parseInt(limite);
+
+    const salto = (numeroPagina - 1) * cantServicios;
+    //filtro por termino
     const query = {};
     // verificar si tenemos uin termoino de busqueda
     if (termino) {
       query.nombreServicio = { $regex: termino, $options: "i" };
     }
 
-    const servicios = await Servicio.find(query).populate(
-      "categoria",
-      "nombre descripcion",
-    );
-    res.status(200).json(servicios);
+    const [servicios, cantidadServicios] = await Promise.all([
+      Servicio.find(query).populate("categoria", "nombre descripcion"),
+    Servicio.countDocuments(query)]);
+
+    //consultas individuales
+    // const servicios = await Servicio.find(query).populate(
+    //   "categoria",
+    //  "nombre descripcion",
+    //);
+    //const cantidadServicios = await Servicio.countDocuments(query)
+
+    res.status(200).json({ servicios, cantidadServicios });
   } catch (error) {
     console.error(error);
     res.status(500).json({
