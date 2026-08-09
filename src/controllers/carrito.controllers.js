@@ -44,3 +44,35 @@ export const agregarAlCarrito = async (req, res) => {
       .json({ mensaje: "Ocurrio un error al agregar un servicio al carrito" });
   }
 };
+
+export const obtenerCarrito = async (req, res) => {
+  try {
+    const usuarioId = req.user.id;
+    const carrito = await buscarOcrearCarrito(usuarioId);
+
+    await carrito.populate("items.servicio", "nombreServicio imagen precio");
+
+    res.status(200).json({ mensaje: carrito });
+  } catch (error) {
+    console.error(error);
+    res.status(500).jsom({ mensaje: "Ocurrio un error al obtener un carrito" });
+  }
+};
+
+export const vaciarCarrito = async(req,res)=>{
+    try {
+    const userId= req.user.id
+    //obtener el carrito
+    const carrito = await buscarOcrearCarrito(userId)
+    //vaciar los elementos del carrito
+    carrito.items = []
+    //guardar los cambios del carrito en  la base de datos
+    await carrito.save()
+
+    res.status(200).json({mensaje:'el carrito fue vaciado con exito',carrito})
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).jsom({ mensaje: "Ocurrio un error al obtener un carrito" });
+  } 
+}
