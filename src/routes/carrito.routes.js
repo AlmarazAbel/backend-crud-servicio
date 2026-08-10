@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   agregarAlCarrito,
+  eliminarServicio,
   obtenerCarrito,
   restarCantidadServicio,
   vaciarCarrito,
@@ -17,5 +18,7 @@ router
 router
   .route("/restar/:servicioId")
   .patch(authenticate,restarCantidadServicio)
+  router  
+  .route("/servicio/:servicioId").delete(authenticate,eliminarServicio)
 
 export default router;

@@ -80,35 +80,59 @@ export const vaciarCarrito = async (req, res) => {
 
 export const restarCantidadServicio = async (req, res) => {
   try {
-const userId = req.user.id
-const {servicioId}= req.params
+    const userId = req.user.id;
+    const { servicioId } = req.params;
 
-const carrito = await buscarOcrearCarrito(userId)
-//buscar la posicion del servicio en el array de items
-const itemIndex = carrito.items.findIndex((item)=> item.servicio.toString() === servicioId)
-if(itemIndex === -1){
-  return res.status(404).json({mensaje:'El servicio no se encuentra en el carrito'})
-}
-//restar -1 a la cantidad de servicios ene l carrito
-carrito.items[itemIndex].cantidad -=1
-//si la cantidad llego a 0 borramos el servicio del array
-if(carrito.items[itemIndex].cantidad <=0){
+    const carrito = await buscarOcrearCarrito(userId);
+    //buscar la posicion del servicio en el array de items
+    const itemIndex = carrito.items.findIndex(
+      (item) => item.servicio.toString() === servicioId,
+    );
+    if (itemIndex === -1) {
+      return res
+        .status(404)
+        .json({ mensaje: "El servicio no se encuentra en el carrito" });
+    }
+    //restar -1 a la cantidad de servicios ene l carrito
+    carrito.items[itemIndex].cantidad -= 1;
+    //si la cantidad llego a 0 borramos el servicio del array
+    if (carrito.items[itemIndex].cantidad <= 0) {
+      carrito.items.splice(itemIndex, 1);
+    }
+    //guardamos en la base de datos
+    await carrito.save();
+    await carrito.populate("items.servicio", "nombreServicio precio imagen");
 
-  carrito.items.splice(itemIndex, 1)
-}
-//guardamos en la base de datos
-await carrito.save()
-await carrito.populate('items.servicio', 'nombreServicio precio imagen')
-
-res.status(200).json({mensaje:'Cantidad actualizada correctamente',carrito})
-
+    res
+      .status(200)
+      .json({ mensaje: "Cantidad actualizada correctamente", carrito });
   } catch (error) {
     console.error(error);
+    res.satatus(500).json({
+      mensaje:
+        "Ocurrio un error al intentar reducir la cantidad de un servicio",
+    });
+  }
+};
+
+export const eliminarServicio = async (req, res) => {
+  try {
+    const { servicioId } = req.params;
+    const userId = req.user.id;
+
+    const carrito = await buscarOcrearCarrito(userId);
+    //borrar el servicio del array
+    carrito.items = carrito.items.filter((item) =>item.servicio.toString() !== servicioId)
+    //guardar los cambios en la base de datos
+    await carrito.save();
+    await carrito.populate("items.servicio", "nombreServicio precio imagen");
     res
-      .satatus(500)
-      .json({
-        mensaje:
-          "Ocurrio un error al intentar reducir la cantidad de un servicio",
-      });
+      .status(200)
+      .json({ mensaje: "El servicio fue eliminado del carrito", carrito });
+  } catch (error) {
+    console.error(error);
+    res.satatus(500).json({
+      mensaje: "Ocurrio un error al intentar eliminar un servicio del carrito",
+    });
   }
 };
