@@ -25,7 +25,14 @@ export default class Server {
   // definir metodos
 
   middlewares() {
-    this.app.use(cors()); //permite conexiones remotas
+    this.app.use(cors({
+      //lee la variable del env. , si no existe usa localhost por defecto
+      origin: process.env.FRONTEND_URL || "https://localhost:5173",
+      credentials : true,
+      methods:["GET","PUT","PATCH","DELETE","OPTIONS"],
+      allowedHeaders:["Content-Type","Authorization"],
+    })); //permite conexiones remotas
+
     this.app.use(express.json()); // permite interpretar los datos que lleguen en la solicitud o request en formato json
     this.app.use(morgan("dev"));
     this.app.use(cookieParser());
